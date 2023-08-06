@@ -152,7 +152,14 @@ struct TextDocumentClientCap {
       // that is typing in one will update others too.
       bool snippetSupport = false;
     } completionItem;
+
   } completion;
+
+  struct InlayHints {
+    struct InlayHint {
+      bool InlayHintsSupport = false;
+    } inlayHintItem;
+  } inlayHints;
 
   // Ignore declaration, implementation, typeDefinition
   struct LinkSupport {
@@ -316,6 +323,8 @@ void do_initialize(MessageHandler *m, InitializeParam &param,
       capabilities.textDocument.definition.linkSupport;
   g_config->client.snippetSupport &=
       capabilities.textDocument.completion.completionItem.snippetSupport;
+  g_config->client.inlayHints &=
+      capabilities.textDocument.inlayHints.inlayHintItem.InlayHintsSupport;
   g_config->client.diagnosticsRelatedInformation &=
       capabilities.textDocument.publishDiagnostics.relatedInformation;
   didChangeWatchedFiles =

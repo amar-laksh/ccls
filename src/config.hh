@@ -121,6 +121,8 @@ struct Config {
     // If false, disable snippets and complete just the identifier part.
     // TextDocumentClientCapabilities.completion.completionItem.snippetSupport
     bool snippetSupport = true;
+
+    bool inlayHints = true;
   } client;
 
   struct CodeLens {
@@ -333,7 +335,8 @@ REFLECT_STRUCT(Config::ServerCap, documentOnTypeFormattingProvider,
 REFLECT_STRUCT(Config::Clang, excludeArgs, extraArgs, pathMappings,
                resourceDir);
 REFLECT_STRUCT(Config::ClientCapability, diagnosticsRelatedInformation,
-               hierarchicalDocumentSymbolSupport, linkSupport, snippetSupport);
+               hierarchicalDocumentSymbolSupport, linkSupport, snippetSupport,
+               inlayHints);
 REFLECT_STRUCT(Config::CodeLens, localVariables);
 REFLECT_STRUCT(Config::Completion::Include, blacklist, maxPathSize,
                suffixWhitelist, whitelist);
