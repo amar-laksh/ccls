@@ -155,11 +155,12 @@ struct TextDocumentClientCap {
 
   } completion;
 
-  struct InlayHints {
-    struct InlayHint {
-      bool InlayHintsSupport = false;
-    } inlayHintItem;
-  } inlayHints;
+  struct InlayHint {
+    bool inlayHintSupport = false;
+    struct resolveSupport {
+      std::vector<std::string> properties = {"label"};
+    } resolveSupport;
+  } inlayHint;
 
   // Ignore declaration, implementation, typeDefinition
   struct LinkSupport {
@@ -178,6 +179,7 @@ struct TextDocumentClientCap {
 REFLECT_STRUCT(TextDocumentClientCap::Completion::CompletionItem,
                snippetSupport);
 REFLECT_STRUCT(TextDocumentClientCap::Completion, completionItem);
+REFLECT_STRUCT(TextDocumentClientCap::InlayHint, resolveSupport);
 REFLECT_STRUCT(TextDocumentClientCap::DocumentSymbol,
                hierarchicalDocumentSymbolSupport);
 REFLECT_STRUCT(TextDocumentClientCap::LinkSupport, linkSupport);
@@ -323,8 +325,8 @@ void do_initialize(MessageHandler *m, InitializeParam &param,
       capabilities.textDocument.definition.linkSupport;
   g_config->client.snippetSupport &=
       capabilities.textDocument.completion.completionItem.snippetSupport;
-  g_config->client.inlayHints &=
-      capabilities.textDocument.inlayHints.inlayHintItem.InlayHintsSupport;
+  g_config->client.inlayHintSupport &=
+      capabilities.textDocument.inlayHint.inlayHintSupport;
   g_config->client.diagnosticsRelatedInformation &=
       capabilities.textDocument.publishDiagnostics.relatedInformation;
   didChangeWatchedFiles =

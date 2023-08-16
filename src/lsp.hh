@@ -12,6 +12,7 @@
 #include <chrono>
 #include <iosfwd>
 #include <string>
+#include <variant>
 
 namespace ccls {
 struct RequestId {
@@ -270,4 +271,45 @@ enum class LanguageId {
   Cuda = 4,
 };
 
+// Adds support for inlay hints
+// https://microsoft.github.io/language-server-protocol/specifications/lsp/3.17/specification/#textDocumentClientCapabilities
+struct LSPAny {};
+
+struct LspCommand {
+  std::string title;
+  std::string command;
+  std::optional<LSPAny> arguments;
+};
+enum class InlayHintKind {
+  // An inlay hint that for a type annotation.
+  Type = 1,
+  // An inlay hint that is for a parameter.
+  Parameter = 2,
+  Other = 3
+};
+[[maybe_unused]] void reflect(JsonWriter &visitor, InlayHintKind &value);
+
+enum class MarkupKind { PlainText = 1, Markdown = 2 };
+
+[[maybe_unused]] void reflect(JsonWriter &visitor, MarkupKind &value);
+
+struct MarkupContent {
+  std::string value;
+  MarkupKind kind;
+  ;
+};
+
+using Tooltip = std::variant<std::string, MarkupContent>;
+[[maybe_unused]] void reflect(JsonWriter &visitor, Tooltip &value);
+
+struct InlayHintLabelPart {
+  std::string value;
+  std::optional<Tooltip> tooltip;
+  std::optional<Location> location;
+  // std::optional<LspCommand> command;
+};
+
+using InlayHintLabel = std::variant<std::string, InlayHintLabelPart>;
+
+[[maybe_unused]] void reflect(JsonWriter &visitor, InlayHintLabel &value);
 } // namespace ccls

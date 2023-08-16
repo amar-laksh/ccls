@@ -122,7 +122,7 @@ struct Config {
     // TextDocumentClientCapabilities.completion.completionItem.snippetSupport
     bool snippetSupport = true;
 
-    bool inlayHints = true;
+    bool inlayHintSupport = true;
   } client;
 
   struct CodeLens {
@@ -334,9 +334,12 @@ REFLECT_STRUCT(Config::ServerCap, documentOnTypeFormattingProvider,
                foldingRangeProvider, workspace);
 REFLECT_STRUCT(Config::Clang, excludeArgs, extraArgs, pathMappings,
                resourceDir);
+// REFLECT_STRUCT(Config::ClientCapability, diagnosticsRelatedInformation,
+//                hierarchicalDocumentSymbolSupport, linkSupport,
+//                snippetSupport);
 REFLECT_STRUCT(Config::ClientCapability, diagnosticsRelatedInformation,
                hierarchicalDocumentSymbolSupport, linkSupport, snippetSupport,
-               inlayHints);
+               inlayHintSupport);
 REFLECT_STRUCT(Config::CodeLens, localVariables);
 REFLECT_STRUCT(Config::Completion::Include, blacklist, maxPathSize,
                suffixWhitelist, whitelist);
