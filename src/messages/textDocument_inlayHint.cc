@@ -12,7 +12,6 @@
 MAKE_HASHABLE(ccls::SymbolIdx, t.usr, t.kind);
 
 namespace ccls {
-REFLECT_STRUCT(SymbolInformation, name, kind, location, containerName);
 
 namespace {
 struct InlayHint {
