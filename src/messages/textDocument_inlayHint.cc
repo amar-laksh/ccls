@@ -65,8 +65,6 @@ REFLECT_STRUCT(InlayHint, position, label, kind, textEdit, tooltip, paddingLeft,
 
 void MessageHandler::textDocument_inlayHint(InlayHintParam &param,
                                             ReplyOnce &reply) {
-  LOG_S(INFO) << "#############################################################"
-                 "###### God damn it";
   int file_id;
   auto [file, wf] =
       findOrFail(param.textDocument.uri.getPath(), reply, &file_id);
@@ -74,26 +72,24 @@ void MessageHandler::textDocument_inlayHint(InlayHintParam &param,
     return;
 
   std::vector<InlayHint> result;
-  std::vector<SymbolRef> syms =
-      findSymbolsAtLocation(wf, file, param.range.start, true);
-  for (const auto &[sym, refcnt] : file->symbol2refcnt) {
-    if (refcnt <= 0)
-      continue;
-    Usr usr = sym.usr;
-    Kind kind = sym.kind;
-    if (std::none_of(syms.begin(), syms.end(), [&](auto &sym1) {
-          return usr == sym1.usr && kind == sym1.kind;
-        }))
-      continue;
-    if (auto loc = getLsLocation(db, wfiles, sym, file_id)) {
-      InlayHint inlayHint;
-      inlayHint.label = "TESTING";
-      inlayHint.position = loc->range.start;
-      inlayHint.kind = sym.kind == Kind::Type ? InlayHintKind::Type
-                                              : InlayHintKind::Parameter;
-      result.push_back(inlayHint);
-    }
-  }
+  // std::vector<SymbolRef> syms =
+  //     findSymbolsAtLocation(wf, file, param.range.end, true);
+
+  // for (const auto &sym : syms) {
+  // Usr usr = sym.usr;
+  // Kind kind = sym.kind;
+  // if (std::none_of(syms.begin(), syms.end(), [&](auto &sym1) {
+  //       return usr == sym1.usr && kind == sym1.kind;
+  //     }))
+  //   continue;
+  InlayHint inlayHint;
+  inlayHint.label = "TESTING";
+  inlayHint.position = param.range.start;
+  // inlayHint.kind =
+  //     sym.kind == Kind::Type ? InlayHintKind::Type :
+  //     InlayHintKind::Parameter;
+  result.push_back(inlayHint);
+  // }
   std::sort(result.begin(), result.end());
   reply(result);
 }
