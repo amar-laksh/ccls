@@ -9,12 +9,12 @@
         {
             "label": "build",
             "type": "shell",
-            "command": "cd build  &&  cmake -H.. -BRelease -DCMAKE_BUILD_TYPE=Release -DCCLS_VERSION=0.30 -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -DCMAKE_CXX_FLAGS='-fvisibility=hidden -fno-rtti' && cmake --build Release -j18 "
+            "command": "cd build  &&  cmake -H.. -BRelease -DCMAKE_BUILD_TYPE=Release -DCCLS_VERSION=0.20220729 -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -DCMAKE_CXX_FLAGS='-fvisibility=hidden -fno-rtti' && cmake --build Release -j18 "
         },
         {
             "label": "clean build",
             "type": "shell",
-            "command": "cd build  && rm -rf * && cmake -H.. -BRelease -DCMAKE_BUILD_TYPE=Release -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -DCCLS_VERSION=0.30 -DCMAKE_CXX_FLAGS='-fvisibility=hidden -fno-rtti' && cmake --build Release -j18 "
+            "command": "cd build  && rm -rf * && cmake -H.. -BRelease -DCMAKE_BUILD_TYPE=Release -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -DCCLS_VERSION=0.20220729 -DCMAKE_CXX_FLAGS='-fvisibility=hidden -fno-rtti' && cmake --build Release -j18 "
         }
     ]
 }

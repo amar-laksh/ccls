@@ -29,6 +29,7 @@ REFLECT_STRUCT(TextDocumentDidChangeParam, textDocument, contentChanges);
 REFLECT_STRUCT(TextDocumentPositionParam, textDocument, position);
 REFLECT_STRUCT(RenameParam, textDocument, position, newName);
 REFLECT_STRUCT(CallsParam, item);
+REFLECT_STRUCT(InlayHintParam, textDocument, range);
 
 // completion
 REFLECT_UNDERLYING(CompletionTriggerKind);
@@ -171,9 +172,6 @@ MessageHandler::MessageHandler() {
   bind("shutdown", &MessageHandler::shutdown);
   bind("textDocument/codeAction", &MessageHandler::textDocument_codeAction);
   bind("textDocument/codeLens", &MessageHandler::textDocument_codeLens);
-  LOG_S(INFO) << "#############################################################"
-                 "###### handling SHIT";
-
   bind("textDocument/inlayHint", &MessageHandler::textDocument_inlayHint);
   bind("textDocument/completion", &MessageHandler::textDocument_completion);
   bind("textDocument/declaration", &MessageHandler::textDocument_declaration);

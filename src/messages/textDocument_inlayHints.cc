@@ -64,10 +64,10 @@ REFLECT_STRUCT(InlayHint, position, label, kind, textEdit, tooltip, paddingLeft,
   }
 }
 
-void MessageHandler::textDocument_inlayHint(TextDocumentPositionParam &param,
+void MessageHandler::textDocument_inlayHint(InlayHintParam &param,
                                             ReplyOnce &reply) {
   LOG_S(INFO) << "#############################################################"
-                 "###### OH SHIT";
+                 "###### God damn it";
   int file_id;
   auto [file, wf] =
       findOrFail(param.textDocument.uri.getPath(), reply, &file_id);
@@ -76,7 +76,7 @@ void MessageHandler::textDocument_inlayHint(TextDocumentPositionParam &param,
 
   std::vector<InlayHint> result;
   std::vector<SymbolRef> syms =
-      findSymbolsAtLocation(wf, file, param.position, true);
+      findSymbolsAtLocation(wf, file, param.range.start, true);
   for (const auto &[sym, refcnt] : file->symbol2refcnt) {
     if (refcnt <= 0)
       continue;
