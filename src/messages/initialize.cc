@@ -69,6 +69,7 @@ struct ServerCap {
   bool documentHighlightProvider = true;
   bool documentSymbolProvider = true;
   bool workspaceSymbolProvider = true;
+  bool inlayHintProvider = true;
   struct CodeActionOptions {
     std::vector<const char *> codeActionKinds = {"quickfix"};
   } codeActionProvider;
@@ -156,10 +157,10 @@ struct TextDocumentClientCap {
   } completion;
 
   struct InlayHint {
-    bool inlayHintSupport = false;
-    struct resolveSupport {
-      std::vector<std::string> properties = {"label"};
-    } resolveSupport;
+    bool inlayHintSupport = true;
+    // struct resolveSupport {
+    //   std::vector<std::string> properties = {"label"};
+    // } resolveSupport;
   } inlayHint;
 
   // Ignore declaration, implementation, typeDefinition
@@ -179,13 +180,13 @@ struct TextDocumentClientCap {
 REFLECT_STRUCT(TextDocumentClientCap::Completion::CompletionItem,
                snippetSupport);
 REFLECT_STRUCT(TextDocumentClientCap::Completion, completionItem);
-REFLECT_STRUCT(TextDocumentClientCap::InlayHint, resolveSupport);
+REFLECT_STRUCT(TextDocumentClientCap::InlayHint, inlayHintSupport);
 REFLECT_STRUCT(TextDocumentClientCap::DocumentSymbol,
                hierarchicalDocumentSymbolSupport);
 REFLECT_STRUCT(TextDocumentClientCap::LinkSupport, linkSupport);
 REFLECT_STRUCT(TextDocumentClientCap::PublishDiagnostics, relatedInformation);
 REFLECT_STRUCT(TextDocumentClientCap, completion, definition, documentSymbol,
-               publishDiagnostics);
+               publishDiagnostics, inlayHint);
 
 struct ClientCap {
   WorkspaceClientCap workspace;

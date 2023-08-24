@@ -1,6 +1,7 @@
 // Copyright 2017-2018 ccls Authors
 // SPDX-License-Identifier: Apache-2.0
 
+#include "log.hh"
 #include "message_handler.hh"
 #include "pipeline.hh"
 #include "query.hh"
@@ -63,8 +64,10 @@ REFLECT_STRUCT(InlayHint, position, label, kind, textEdit, tooltip, paddingLeft,
   }
 }
 
-void MessageHandler::textDocument_inlayHints(TextDocumentPositionParam &param,
-                                             ReplyOnce &reply) {
+void MessageHandler::textDocument_inlayHint(TextDocumentPositionParam &param,
+                                            ReplyOnce &reply) {
+  LOG_S(INFO) << "#############################################################"
+                 "###### OH SHIT";
   int file_id;
   auto [file, wf] =
       findOrFail(param.textDocument.uri.getPath(), reply, &file_id);

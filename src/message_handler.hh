@@ -307,7 +307,7 @@ private:
   void textDocument_rename(RenameParam &, ReplyOnce &);
   void textDocument_signatureHelp(TextDocumentPositionParam &, ReplyOnce &);
   void textDocument_typeDefinition(TextDocumentPositionParam &, ReplyOnce &);
-  void textDocument_inlayHints(TextDocumentPositionParam &, ReplyOnce &);
+  void textDocument_inlayHint(TextDocumentPositionParam &, ReplyOnce &);
   void workspace_didChangeConfiguration(EmptyParam &);
   void workspace_didChangeWatchedFiles(DidChangeWatchedFilesParam &);
   void workspace_didChangeWorkspaceFolders(DidChangeWorkspaceFoldersParam &);

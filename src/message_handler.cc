@@ -171,7 +171,10 @@ MessageHandler::MessageHandler() {
   bind("shutdown", &MessageHandler::shutdown);
   bind("textDocument/codeAction", &MessageHandler::textDocument_codeAction);
   bind("textDocument/codeLens", &MessageHandler::textDocument_codeLens);
-  bind("textDocument/inlayHints", &MessageHandler::textDocument_inlayHints);
+  LOG_S(INFO) << "#############################################################"
+                 "###### handling SHIT";
+
+  bind("textDocument/inlayHint", &MessageHandler::textDocument_inlayHint);
   bind("textDocument/completion", &MessageHandler::textDocument_completion);
   bind("textDocument/declaration", &MessageHandler::textDocument_declaration);
   bind("textDocument/definition", &MessageHandler::textDocument_definition);
