@@ -296,20 +296,19 @@ enum class MarkupKind { PlainText = 1, Markdown = 2 };
 struct MarkupContent {
   std::string value;
   MarkupKind kind;
-  ;
 };
 
 using Tooltip = std::variant<std::string, MarkupContent>;
 [[maybe_unused]] void reflect(JsonWriter &visitor, Tooltip &value);
 
 struct InlayHintLabelPart {
-  std::string value;
+  std::string_view value;
   std::optional<Tooltip> tooltip;
   std::optional<Location> location;
   // std::optional<LspCommand> command;
 };
 
-using InlayHintLabel = std::variant<std::string, InlayHintLabelPart>;
+using InlayHintLabel = std::variant<std::string_view, InlayHintLabelPart>;
 
 [[maybe_unused]] void reflect(JsonWriter &visitor, InlayHintLabel &value);
 } // namespace ccls

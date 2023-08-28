@@ -841,4 +841,57 @@ std::vector<SymbolRef> findSymbolsAtLocation(WorkingFile *wfile,
 
   return symbols;
 }
+
+std::vector<SymbolRef> findSymbolsInLsRange(WorkingFile *wfile, QueryFile *file,
+                                            lsRange &ls_range, bool smallest) {
+  std::vector<SymbolRef> symbols;
+
+  for (auto [sym, refcnt] : file->symbol2refcnt) {
+    auto sym_ls_range = getLsRange(wfile, sym.range);
+    if (sym_ls_range) {
+      if (refcnt > 0 && ls_range.includes(sym_ls_range.value()))
+        symbols.push_back(sym);
+    }
+  }
+
+  // Order shorter ranges first, since they are more detailed/precise. This is
+  // important for macros which generate code so that we can resolving the
+  // macro argument takes priority over the entire macro body.
+  //
+  // Order Kind::Var before Kind::Type. Macro calls are treated as Var
+  // currently. If a macro expands to tokens led by a Kind::Type, the macro and
+  // the Type have the same range. We want to find the macro definition instead
+  // of the Type definition.
+  //
+  // Then order functions before other types, which makes goto definition work
+  // better on constructors.
+  std::sort(
+      symbols.begin(), symbols.end(),
+      [](const SymbolRef &a, const SymbolRef &b) {
+        int t = computeRangeSize(a.range) - computeRangeSize(b.range);
+        if (t)
+          return t < 0;
+        // MacroExpansion
+        if ((t = (a.role & Role::Dynamic) - (b.role & Role::Dynamic)))
+          return t > 0;
+        if ((t = (a.role & Role::Definition) - (b.role & Role::Definition)))
+          return t > 0;
+        // operator> orders Var/Func before Type.
+        t = static_cast<int>(a.kind) - static_cast<int>(b.kind);
+        if (t)
+          return t > 0;
+        return a.usr < b.usr;
+      });
+  if (symbols.size() && smallest) {
+    SymbolRef sym = symbols[0];
+    for (size_t i = 1; i < symbols.size(); i++)
+      if (!(sym.range == symbols[i].range && sym.kind == symbols[i].kind)) {
+        symbols.resize(i);
+        break;
+      }
+  }
+
+  return symbols;
+}
+
 } // namespace ccls

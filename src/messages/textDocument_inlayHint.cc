@@ -9,8 +9,6 @@
 #include <algorithm>
 #include <variant>
 
-MAKE_HASHABLE(ccls::SymbolIdx, t.usr, t.kind);
-
 namespace ccls {
 
 namespace {
@@ -54,7 +52,7 @@ REFLECT_STRUCT(InlayHint, position, label, kind, textEdit, tooltip, paddingLeft,
 [[maybe_unused]] void reflect(JsonWriter &visitor, InlayHintLabel &value) {
 
   if (value.index() == 0) {
-    reflect(visitor, std::get<std::string>(value));
+    reflect(visitor, std::get<std::string_view>(value));
   } else {
     auto inlayHintLabelPart = std::get<InlayHintLabelPart>(value);
     reflect(visitor, inlayHintLabelPart.value);
@@ -72,24 +70,37 @@ void MessageHandler::textDocument_inlayHint(InlayHintParam &param,
     return;
 
   std::vector<InlayHint> result;
-  // std::vector<SymbolRef> syms =
-  //     findSymbolsAtLocation(wf, file, param.range.end, true);
+  std::vector<SymbolRef> syms =
+      findSymbolsInLsRange(wf, file, param.range, false);
 
-  // for (const auto &sym : syms) {
-  // Usr usr = sym.usr;
-  // Kind kind = sym.kind;
-  // if (std::none_of(syms.begin(), syms.end(), [&](auto &sym1) {
-  //       return usr == sym1.usr && kind == sym1.kind;
-  //     }))
-  //   continue;
-  InlayHint inlayHint;
-  inlayHint.label = "TESTING";
-  inlayHint.position = param.range.start;
-  // inlayHint.kind =
-  //     sym.kind == Kind::Type ? InlayHintKind::Type :
-  //     InlayHintKind::Parameter;
-  result.push_back(inlayHint);
-  // }
+  for (const auto &sym : syms) {
+    // if (std::none_of(syms.begin(), syms.end(), [&](auto &sym1) {
+    //       return usr == sym1.usr && kind == sym1.kind;
+    //     }))
+    //   continue;
+    InlayHint inlayHint;
+    inlayHint.position.line = sym.range.start.line;
+    inlayHint.position.character = sym.range.start.column;
+    inlayHint.kind = sym.kind == Kind::Type || sym.kind == Kind::Var
+                         ? InlayHintKind::Type
+                         : InlayHintKind::Parameter;
+
+    if (std::optional<SymbolInformation> info = getSymbolInfo(db, sym, true)) {
+      switch (sym.kind) {
+      case Kind::Type:
+        inlayHint.label = "Type";
+        break;
+      case Kind::Var:
+        inlayHint.label = "Var";
+        break;
+      case Kind::Func:
+        inlayHint.label = "Other";
+        break;
+      }
+    }
+
+    result.push_back(inlayHint);
+  }
   std::sort(result.begin(), result.end());
   reply(result);
 }

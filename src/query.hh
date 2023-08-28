@@ -216,6 +216,10 @@ std::vector<SymbolRef> findSymbolsAtLocation(WorkingFile *working_file,
                                              QueryFile *file, Position &ls_pos,
                                              bool smallest = false);
 
+std::vector<SymbolRef> findSymbolsInLsRange(WorkingFile *working_file,
+                                            QueryFile *file, lsRange &ls_pos,
+                                            bool smallest = false);
+
 template <typename Fn> void withEntity(DB *db, SymbolIdx sym, Fn &&fn) {
   switch (sym.kind) {
   case Kind::Invalid:
